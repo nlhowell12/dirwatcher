@@ -15,12 +15,15 @@ file_handler.setFormatter(formatter)
 logger.addHandler(file_handler)
 
 checked_files = {}
+start_time = time.time()
 
 
 def receive_signal(signum, stack):
     """Logs Interrupt and Termination signals"""
     if signum == 2:
-        logger.info("Program terminated upon user request")
+        logger.info(
+            "Program terminated upon user request. Uptime: {} seconds".format(
+                time.time() - start_time))
         sys.exit(0)
     if signum == 15:
         logger.exception("Program terminated!")
