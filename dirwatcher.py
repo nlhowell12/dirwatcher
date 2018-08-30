@@ -4,6 +4,7 @@ import logging
 import argparse
 import time
 import sys
+import os
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
@@ -22,7 +23,7 @@ def receive_signal(signum, stack):
         logger.info("Program terminated upon user request")
         sys.exit(0)
     if signum == 15:
-        logger.critical("Program terminated: {}".format(stack))
+        logger.exception("Program terminated!")
 
 
 def check_magic(file):
@@ -44,6 +45,13 @@ def main():
     args = parser.parse_args()
 
     logger.info("Program searching in {}".format(args.dir))
+
+    try:
+        os.chdir(args.dir)
+    except Exception:
+        logger.exception("Directory not found")
+        print "\nDirectory not found!\n"
+        sys.exit(0)
 
     signal.signal(signal.SIGINT, receive_signal)
     signal.signal(signal.SIGTERM, receive_signal)
